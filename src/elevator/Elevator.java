@@ -57,11 +57,9 @@ public class Elevator implements Runnable{
     	if(direction ==  Direction.UP) {
     		Thread.sleep(speed);
     		floor = upStops.peek().floor;
-    		open();
     	}else {
     		Thread.sleep(speed);
     		floor = downStops.peek().floor;
-    		open();
     	}
     }
     public State getState() { return null; }
