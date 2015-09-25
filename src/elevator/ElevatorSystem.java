@@ -3,11 +3,11 @@ import java.util.*;
 
 public class ElevatorSystem {
 
-    // N elevators
+    // 4 elevators
     private boolean[] elevatoron = new boolean[4];
     private Thread myThreads[] = new Thread[4];
     
-    // M floors, N elevators, each one has a control panel.
+    //30 floors
     private Floor[] floors = new Floor[30];
 
     private static final ElevatorSystem instance = new ElevatorSystem();
@@ -21,15 +21,11 @@ public class ElevatorSystem {
     		myThreads[i].start();
     	}
     }
+    //singleton
     public static ElevatorSystem getInstance() {
     	return instance;
     }    
-//    public synchronized static ElevatorSystem getInstance() {
-//            if (instance == null) {
-//                    instance = new ElevatorSystem();
-//            }
-//            return instance;
-//    }
+
     public synchronized void turnoff(int id) {
     	elevatoron[id] = false;
     }
