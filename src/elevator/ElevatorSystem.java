@@ -36,9 +36,5 @@ public class ElevatorSystem {
     		floors[floor].pressDown(person);
     	}
     }
-    
-    public void update(Observable elevator, Object state) {
-    }
-    
 
 }
