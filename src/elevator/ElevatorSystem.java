@@ -6,9 +6,9 @@ public class ElevatorSystem {
     // N elevators
     private boolean[] elevatoron = new boolean[4];
     private Thread myThreads[] = new Thread[4];
-    
+    int maxfloor = 30;
     // M floors, N elevators, each one has a control panel.
-    private Floor[] floors = new Floor[30];
+    private Floor[] floors = new Floor[maxfloor];
 
     private static final ElevatorSystem instance = new ElevatorSystem();
     private ElevatorSystem() {
@@ -17,19 +17,13 @@ public class ElevatorSystem {
     	}
     	for (int i = 0; i < 4; i++) {
     		elevatoron[i] = true;
-    		myThreads[i] = new Thread(new Elevator(i,10,elevatoron,floors));
+    		myThreads[i] = new Thread(new Elevator(i,10,elevatoron,floors,maxfloor));
     		myThreads[i].start();
     	}
     }
     public static ElevatorSystem getInstance() {
     	return instance;
     }    
-//    public synchronized static ElevatorSystem getInstance() {
-//            if (instance == null) {
-//                    instance = new ElevatorSystem();
-//            }
-//            return instance;
-//    }
     public synchronized void turnoff(int id) {
     	elevatoron[id] = false;
     }

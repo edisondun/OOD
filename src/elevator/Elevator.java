@@ -10,6 +10,7 @@ public class Elevator implements Runnable{
     private int count;
     private int speed;
     private int id;
+    private int maxfloor;
     private boolean[] elevatoron;
     private int targetfloor;
     private Floor[] floors;
@@ -24,7 +25,7 @@ public class Elevator implements Runnable{
     		return b.floor-a.floor;
     	}
     };
-    public Elevator(int id, int capacity, boolean[] elevatoron, Floor[] floors) {
+    public Elevator(int id, int capacity, boolean[] elevatoron, Floor[] floors, int maxfloor) {
     	this.id = id;
     	this.floor = 0;
     	this.capacity = capacity;
@@ -33,23 +34,24 @@ public class Elevator implements Runnable{
     	this.targetfloor = 0;
     	this.elevatoron = elevatoron;
     	this.direction = Direction.UP;
+    	this.maxfloor = maxfloor;
     }
 	public synchronized boolean onoff() {
     	return elevatoron[this.id];
     }
     public void setDirection() throws InterruptedException {
-    	if(floor == targetfloor)
+    	if(floor == targetfloor||downStops.isEmpty()&&upStops.isEmpty())
 	    	if(direction ==  Direction.UP) {
-	    		direction =  Direction.DOWN;
-	    		open();
-	    		if(downStops.isEmpty()) {
-	    			 addStop(floor);
-	    		}
-	    	}else {
-	    		direction =  Direction.UP;
-	    		open();
+	    		addStop(floor);
 	    		if(upStops.isEmpty()) {
-	    			 addStop(floor);
+	    			direction =  Direction.DOWN;
+	    			addStop(floor);
+	    		}
+	    	}else {	
+	    		addStop(floor);
+	    		if(downStops.isEmpty()) {
+	    			direction =  Direction.UP;
+	    			addStop(floor);
 	    		}
 	    	}
     }
@@ -57,11 +59,9 @@ public class Elevator implements Runnable{
     	if(direction ==  Direction.UP) {
     		Thread.sleep(speed);
     		floor = upStops.peek().floor;
-    		open();
     	}else {
     		Thread.sleep(speed);
     		floor = downStops.peek().floor;
-    		open();
     	}
     }
     public State getState() { return null; }
@@ -115,27 +115,25 @@ public class Elevator implements Runnable{
     }
     
     public void addStop(int floor) {
-    	int i =1;
-    	while(floor+i<30 || floor-i>0) {
-    		int nextfloor = 0;
-    		if(floor+i<30) {
-    			nextfloor = floor+i;
-    		}else {
-    			nextfloor =  floor-i;
+    	Person a = null;
+    	if(direction ==  Direction.UP) {
+    		int i = maxfloor;
+    		while(floor<i && a== null) {
+    			a = floors[i].getdown();
+    			i--;
+    			if(a!=null) {
+    				downStops.offer(a);
+    			}
     		}
-			Person temp = floors[nextfloor].getup();
-			if (temp!=null) {
-				upStops.offer(temp);
-				direction = Direction.UP;
-				break;
-			}
-			temp = floors[nextfloor].getdown();
-			if (temp!=null) {
-				downStops.offer(temp);
-				direction = Direction.DOWN;
-				break;
-			}
-    		i++;
+    	}else {
+    		int i = 0;
+    		while(floor>i && a== null) {
+    			a = floors[i].getup();
+    			i++;
+    			if(a!=null) {
+    				upStops.offer(a);
+    			}
+    		}    		
     	}
     }
 
