@@ -1,14 +1,14 @@
 package elevator;
-import java.util.*;
-
 public class ElevatorSystem {
 
-    // N elevators
+    // 4 elevators
     private boolean[] elevatoron = new boolean[4];
     private Thread myThreads[] = new Thread[4];
+
     int maxfloor = 30;
-    // M floors, N elevators, each one has a control panel.
+    // 30 floors
     private Floor[] floors = new Floor[maxfloor];
+
 
     private static final ElevatorSystem instance = new ElevatorSystem();
     private ElevatorSystem() {
@@ -21,9 +21,11 @@ public class ElevatorSystem {
     		myThreads[i].start();
     	}
     }
+    //singleton
     public static ElevatorSystem getInstance() {
     	return instance;
     }    
+
     public synchronized void turnoff(int id) {
     	elevatoron[id] = false;
     }
@@ -34,9 +36,5 @@ public class ElevatorSystem {
     		floors[floor].pressDown(person);
     	}
     }
-    
-    public void update(Observable elevator, Object state) {
-    }
-    
 
 }
